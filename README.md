@@ -138,6 +138,18 @@ src/
 1. **Module by module.** We wrote and tested the code for each subsystem separately: the camera colour detection, the ultrasonic sensors, the steering servo, the drive motor and the colour sensor.
 2. **Integration.** After every part worked on its own, we merged them step by step into one program.
 3. **Tools.** Development was done directly on the Raspberry Pi in **Thonny** on Raspberry Pi OS. The final program was long, so we brought it onto the Pi and assembled it in Thonny piece by piece.
+4. **Headless setup (no monitor).** We had no monitor for the Pi, so we worked with it remotely:
+   - opened a **Wi-Fi hotspot on the laptop** and configured the Raspberry Pi to connect to it automatically;
+   - found the Pi's **IP address** in the hotspot's list of connected devices;
+   - connected over **SSH with PuTTY** and enabled VNC on the Pi (`sudo raspi-config` → Interface Options → VNC);
+   - opened **RealVNC Viewer** on the laptop, connected to the Pi's IP and worked with its full desktop, including Thonny.
+
+```
+Laptop (Wi-Fi hotspot) ──Wi-Fi──► Raspberry Pi
+      │                               ▲
+      ├── PuTTY (SSH) ───────────────┤  enable VNC
+      └── RealVNC Viewer ────────────┘  remote desktop → Thonny
+```
 
 ---
 
@@ -194,6 +206,7 @@ Follows the official WRO Future Engineers documentation template:
 - Raspberry Pi 4B or 3B with Raspberry Pi OS (Bookworm or newer, for `rpicam-vid`)
 - Raspberry Pi camera connected to the CSI port
 - We used **Thonny** (pre-installed on Raspberry Pi OS) to write and run the code
+- No monitor needed: connect via SSH (PuTTY) + VNC (RealVNC Viewer) over a laptop hotspot — see [Development Process](#%EF%B8%8F-development-process)
 - Python 3.9+
 
 ### Install
