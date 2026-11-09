@@ -9,7 +9,8 @@ The car drives laps around the field on its own, keeps a safe distance from the 
 recognizes **red and green traffic pillars** with a camera and passes them on the correct side,
 and counts the coloured lines on the mat to know how many laps it has completed.
 
-> Built with Raspberry Pi, Python, OpenCV and a lot of late-night debugging.
+> Built with Raspberry Pi, Python, OpenCV, 3D-printed parts and a lot of late-night debugging.
+> This was our team's **first WRO Future Engineers competition and our first project with a Raspberry Pi**.
 
 ---
 
@@ -17,7 +18,9 @@ and counts the coloured lines on the mat to know how many laps it has completed.
 - [The Challenge](#-the-challenge)
 - [Hardware](#-hardware)
 - [Wiring / Pinout](#-wiring--pinout)
+- [Mechanical Design](#%EF%B8%8F-mechanical-design)
 - [Software Architecture](#-software-architecture)
+- [Development Process](#%EF%B8%8F-development-process)
 - [How the Algorithm Works](#-how-the-algorithm-works)
 - [Repository Structure](#-repository-structure)
 - [Getting Started](#-getting-started)
@@ -46,15 +49,15 @@ The robot must use a car-like steering mechanism (steered front wheels, driven r
 
 | Component | Model | Purpose |
 |-----------|-------|---------|
-| Main controller | Raspberry Pi <!-- TODO: 4 or 5? --> | Runs the vision and control code |
-| Camera | Raspberry Pi Camera Module <!-- TODO: version --> | Detects red/green pillars (160×120 @ 40 fps, MJPEG) |
-| Drive motor | DC gear motor <!-- TODO: model / RPM --> | Rear-wheel drive |
+| Main controller | Raspberry Pi 4 Model B → replaced by **Raspberry Pi 3 Model B** | Runs the vision and control code (see [Challenges](#-challenges--lessons-learned) for why we switched) |
+| Camera | Raspberry Pi Camera Module (CSI ribbon connector, plugs directly into the Pi) | Detects red/green pillars (160×120 @ 40 fps, MJPEG) |
+| Drive motor | 1 × DC motor <!-- TODO: model / RPM --> | Drives the rear wheels through a gear train (rules allow only one drive motor) |
 | Motor driver | TB6612FNG | Direction + PWM speed control of the drive motor |
 | Steering | Servo motor <!-- TODO: model (e.g. MG90S / SG90) --> | Front-wheel steering (±15° used) |
 | Distance sensors | 3 × ultrasonic sensor <!-- TODO: HC-SR04? --> | Left / front / right wall distance |
 | Colour sensor | TCS3200 / TCS230 | Detects the coloured lines on the mat → lap counting |
 | Power | <!-- TODO: battery type, voltage, capacity --> | |
-| Chassis | <!-- TODO: custom 3D-printed / LEGO / RC kit? --> | |
+| Chassis & body | 3D-printed parts (open design found on YouTube, printed by the team) | Frame, gear train, sensor and camera mounts |
 
 <!-- TODO (Shamil): add photos of the robot from all 6 sides into /v-photos -->
 
@@ -80,6 +83,17 @@ All pins use **BCM numbering**.
 > ⚠️ The ultrasonic ECHO pins output 5 V while Raspberry Pi GPIO is 3.3 V — use a voltage divider or a level shifter.
 
 The full wiring diagram is in [`/schemes`](schemes/).
+
+---
+
+## ⚙️ Mechanical Design
+
+- **Chassis and body** are 3D-printed. We based them on an open design we found on YouTube, then printed and assembled all parts ourselves.
+- **One drive motor.** The rules allow only a single drive motor, so we built a **gear train with a drive shaft** that transfers torque from the motor to the rear wheels.
+- **Steering** is done by a servo turning the front wheels, like a real car (Ackermann-style).
+- **Gear fixes.** The printed gears slipped and did not seat properly on their shafts. We filed the gears to increase the contact area and friction, and glued the joints in critical places to make the drivetrain rigid.
+
+<!-- TODO (Shamil): add a photo or render of the gear train / drive shaft here, e.g. ![Gear train](v-photos/gears.jpg) -->
 
 ---
 
@@ -116,6 +130,14 @@ src/
 - The TCS3200 outputs a square wave whose frequency depends on light intensity. Pins **S2/S3** select the red, green or blue photodiode filter, and **S0/S1** set the output scaling (100 % here).
 - The program counts pulses in a 10 ms window for each filter, normalises them with calibration values to a 0–255 scale, and decides **BLUE** when blue dominates and is above 150.
 - Every detection increments `blue_count`, which is used to count corners and therefore laps.
+
+---
+
+## 🛠️ Development Process
+
+1. **Module by module.** We wrote and tested the code for each subsystem separately: the camera colour detection, the ultrasonic sensors, the steering servo, the drive motor and the colour sensor.
+2. **Integration.** After every part worked on its own, we merged them step by step into one program.
+3. **Tools.** Development was done directly on the Raspberry Pi in **Thonny** on Raspberry Pi OS. The final program was long, so we brought it onto the Pi and assembled it in Thonny piece by piece.
 
 ---
 
@@ -169,7 +191,9 @@ Follows the official WRO Future Engineers documentation template:
 ## 🚀 Getting Started
 
 ### Requirements
-- Raspberry Pi with Raspberry Pi OS (Bookworm or newer, for `rpicam-vid`)
+- Raspberry Pi 4B or 3B with Raspberry Pi OS (Bookworm or newer, for `rpicam-vid`)
+- Raspberry Pi camera connected to the CSI port
+- We used **Thonny** (pre-installed on Raspberry Pi OS) to write and run the code
 - Python 3.9+
 
 ### Install
@@ -205,12 +229,18 @@ python3 src/lap_counter_color_sensor.py
 ---
 
 ## 🧗 Challenges & Lessons Learned
-<!-- TODO (Shamil): write 3–5 real problems you faced and how you solved them. This is the most interesting part for readers and recruiters. Ideas: -->
+### Hardware
+- **Burned Raspberry Pi 4B.** During testing our Raspberry Pi 4B stopped giving 3.3 V on its GPIO pins. We later found the cause: we had not accounted for **current flowing back into the Pi** from the motor/power side, and it damaged the board's protection circuit. We switched to a **Raspberry Pi 3B** to continue.
+  *Lesson:* isolate the motor power from the logic power, use protection diodes against back-current, and check the wiring with a multimeter before powering on.
+- **Slipping gears.** The 3D-printed gears slipped or did not seat on the shafts. We filed them to increase the contact surface and friction and glued the weakest joints.
+- **No spare parts.** As it was our first competition of this kind, we printed only one set of parts. When a part broke, it caused big delays.
+  *Lesson:* always print spare gears, mounts and other wear parts before the competition.
+
+### Software
 - **Camera latency** — high resolution made the Pi too slow, so the stream was reduced to 160×120 MJPEG at 40 fps and only the central ROI is processed.
 - **Detecting red** — red sits at both ends of the HSV hue range, so two masks had to be combined.
 - **Noisy ultrasonic readings** — a 50 ms timeout returns `-1` for failed measurements, so the robot ignores bad data instead of reacting to it.
 - **Colour sensor speed** — the sampling window was reduced from 100 ms to 10 ms per channel so the robot does not miss the line while moving.
-<!-- - add your own: lighting at the venue, battery voltage drop, mechanical steering play, ... -->
 
 ---
 
@@ -225,11 +255,11 @@ python3 src/lap_counter_color_sensor.py
 ---
 
 ## 👥 Team
-<!-- TODO (Shamil): fill in names and roles -->
 | Name | Role |
 |------|------|
-| **Shamil Mammadov** — [LinkedIn](https://www.linkedin.com/in/shamil-mammadov-419995326/) | <!-- e.g. software, computer vision, electronics --> |
-| <!-- teammate --> | <!-- role --> |
+| **Shamil Mammadov** — [LinkedIn](https://www.linkedin.com/in/shamil-mammadov-419995326/) | **Software lead.** Wrote almost all of the code, set up the Raspberry Pi, integrated all modules into one program, and taught teammates how the software and connections work. Also helped build the robot and wired and tested sensors. |
+| Teammate 1 <!-- TODO (Shamil): replace with name --> | **Hardware & design.** Mechanical design, assembly and wiring of the robot. |
+| Teammate 2 <!-- TODO (Shamil): replace with name --> | **Software support.** Helped with the software and with testing. |
 
 Baku Engineering University — INHA University double degree program, Electrical & Electronics Engineering.
 
