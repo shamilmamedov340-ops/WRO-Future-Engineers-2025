@@ -271,8 +271,8 @@ python3 src/lap_counter_color_sensor.py
 | Name | Role |
 |------|------|
 | **Shamil Mammadov** — [LinkedIn](https://www.linkedin.com/in/shamil-mammadov-419995326/) | **Software lead.** Wrote almost all of the code, set up the Raspberry Pi, integrated all modules into one program, and taught teammates how the software and connections work. Also helped build the robot and wired and tested sensors. |
-| Teammate 1 <!-- TODO (Shamil): replace with name --> | **Hardware & design.** Mechanical design, assembly and wiring of the robot. |
-| Teammate 2 <!-- TODO (Shamil): replace with name --> | **Software support.** Helped with the software and with testing. |
+| Hakim Musazada <!-- TODO (Shamil): replace with name --> | **Hardware & design.** Mechanical design, assembly and wiring of the robot. |
+| Chichek Abdullayeva <!-- TODO (Shamil): replace with name --> | **Software support.** Helped with the software and with testing. |
 
 Baku Engineering University — INHA University double degree program, Electrical & Electronics Engineering.
 
