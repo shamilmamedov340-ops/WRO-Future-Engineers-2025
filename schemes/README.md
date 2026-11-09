@@ -1,6 +1,14 @@
 # Wiring diagrams
 
-<!-- TODO (Shamil): add the wiring diagram here (Fritzing, KiCad, EasyEDA or even a clear hand drawing photo), e.g. schemes/wiring.png -->
+| File | Description |
+|------|-------------|
+| `wiring-diagram.jpg` | Full wiring diagram: Raspberry Pi, TB6612FNG, servo, 3 × HC-SR04 with voltage dividers, LM2596 buck converter, battery |
+| `layout-sketch.jpg` | Hand-drawn component layout on the chassis (13.6 × 26 cm) and power distribution plan |
+| `pin-planning-whiteboard.jpg` | GPIO pin planning on the whiteboard |
+
+![Wiring diagram](wiring-diagram.jpg)
+
+## Pin table
 
 | Function | Signal | GPIO (BCM) |
 |----------|--------|-----------|

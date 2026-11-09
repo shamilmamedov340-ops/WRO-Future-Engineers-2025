@@ -1,7 +1,6 @@
 # 🤖 Autonomous Self-Driving Car — WRO 2025 Future Engineers
 
-<!-- TODO (Shamil): add a cover photo of the robot here, e.g. -->
-<!-- ![Robot](v-photos/front.jpg) -->
+<p align="center"><img src="v-photos/left.jpg" alt="Our WRO Future Engineers robot" width="700"></p>
 
 An autonomous vehicle built for the **World Robot Olympiad (WRO) 2025 — Future Engineers** category,
 presented at the **VIII Azerbaijan Robot Olympiad**.
@@ -18,6 +17,7 @@ and counts the coloured lines on the mat to know how many laps it has completed.
 - [The Challenge](#-the-challenge)
 - [Hardware](#-hardware)
 - [Wiring / Pinout](#-wiring--pinout)
+- [Photos](#-photos)
 - [Mechanical Design](#%EF%B8%8F-mechanical-design)
 - [Software Architecture](#-software-architecture)
 - [Development Process](#%EF%B8%8F-development-process)
@@ -51,15 +51,17 @@ The robot must use a car-like steering mechanism (steered front wheels, driven r
 |-----------|-------|---------|
 | Main controller | Raspberry Pi 4 Model B → replaced by **Raspberry Pi 3 Model B** | Runs the vision and control code (see [Challenges](#-challenges--lessons-learned) for why we switched) |
 | Camera | Raspberry Pi Camera Module (CSI ribbon connector, plugs directly into the Pi) | Detects red/green pillars (160×120 @ 40 fps, MJPEG) |
-| Drive motor | 1 × DC motor <!-- TODO: model / RPM --> | Drives the rear wheels through a gear train (rules allow only one drive motor) |
+| Drive motor | 1 × yellow TT DC gear motor <!-- TODO: check model / RPM --> | Drives the rear wheels through a gear train (rules allow only one drive motor) |
 | Motor driver | TB6612FNG | Direction + PWM speed control of the drive motor |
 | Steering | Servo motor <!-- TODO: model (e.g. MG90S / SG90) --> | Front-wheel steering (±15° used) |
-| Distance sensors | 3 × ultrasonic sensor <!-- TODO: HC-SR04? --> | Left / front / right wall distance |
+| Distance sensors | 3 × HC-SR04 ultrasonic sensor (with resistor voltage dividers on the ECHO lines) | Left / front / right wall distance |
 | Colour sensor | TCS3200 / TCS230 | Detects the coloured lines on the mat → lap counting |
-| Power | <!-- TODO: battery type, voltage, capacity --> | |
+| Power | Battery pack <!-- TODO: battery type, voltage, capacity --> + **3 × LM2596 buck converters** | Regulator 1 → Raspberry Pi, regulator 2 → motor driver, regulator 3 → ultrasonic sensors and other modules. Separate rails keep motor noise away from the Pi |
 | Chassis & body | 3D-printed parts (open design found on YouTube, printed by the team) | Frame, gear train, sensor and camera mounts |
+| Prototyping | Breadboard + jumper wires | Power distribution and voltage dividers |
 
-<!-- TODO (Shamil): add photos of the robot from all 6 sides into /v-photos -->
+**Dimensions:** about **13.6 cm × 26 cm** (width × length), see the [layout sketch](schemes/layout-sketch.jpg).
+
 
 ---
 
@@ -82,7 +84,22 @@ All pins use **BCM numbering**.
 
 > ⚠️ The ultrasonic ECHO pins output 5 V while Raspberry Pi GPIO is 3.3 V — use a voltage divider or a level shifter.
 
-The full wiring diagram is in [`/schemes`](schemes/).
+### Wiring diagram
+<p align="center"><img src="schemes/wiring-diagram.jpg" alt="Wiring diagram" width="700"></p>
+
+More planning material is in [`/schemes`](schemes/): the hand-drawn [component layout](schemes/layout-sketch.jpg) and our [pin-planning whiteboard](schemes/pin-planning-whiteboard.jpg).
+
+---
+
+## 📸 Photos
+
+| Front | Back |
+|:---:|:---:|
+| <img src="v-photos/front.jpg" width="380"> | <img src="v-photos/back.jpg" width="380"> |
+| **Left** | **Right** |
+| <img src="v-photos/left.jpg" width="380"> | <img src="v-photos/right.jpg" width="380"> |
+| **Top** | **Bottom** |
+| <img src="v-photos/top.jpg" width="380"> | <img src="v-photos/bottom.jpg" width="380"> |
 
 ---
 
@@ -93,7 +110,7 @@ The full wiring diagram is in [`/schemes`](schemes/).
 - **Steering** is done by a servo turning the front wheels, like a real car (Ackermann-style).
 - **Gear fixes.** The printed gears slipped and did not seat properly on their shafts. We filed the gears to increase the contact area and friction, and glued the joints in critical places to make the drivetrain rigid.
 
-<!-- TODO (Shamil): add a photo or render of the gear train / drive shaft here, e.g. ![Gear train](v-photos/gears.jpg) -->
+<!-- TODO (Shamil, optional): add a close-up photo of the gear train, e.g. ![Gear train](v-photos/gears.jpg) -->
 
 ---
 
@@ -271,16 +288,22 @@ python3 src/lap_counter_color_sensor.py
 | Name | Role |
 |------|------|
 | **Shamil Mammadov** — [LinkedIn](https://www.linkedin.com/in/shamil-mammadov-419995326/) | **Software lead.** Wrote almost all of the code, set up the Raspberry Pi, integrated all modules into one program, and taught teammates how the software and connections work. Also helped build the robot and wired and tested sensors. |
-| Hakim Musazada <!-- TODO (Shamil): replace with name --> | **Hardware & design.** Mechanical design, assembly and wiring of the robot. |
-| Chichek Abdullayeva <!-- TODO (Shamil): replace with name --> | **Software support.** Helped with the software and with testing. |
+| Teammate 1 <!-- TODO (Shamil): replace with name --> | **Hardware & design.** Mechanical design, assembly and wiring of the robot. |
+| Teammate 2 <!-- TODO (Shamil): replace with name --> | **Software support.** Helped with the software and with testing. |
 
 Baku Engineering University — INHA University double degree program, Electrical & Electronics Engineering.
+
+<p align="center"><img src="t-photos/team-official.jpg" alt="Team photo" width="600"></p>
 
 ---
 
 ## 🎥 Demo
-<!-- TODO (Shamil): paste the YouTube link here and in /video/README.md -->
-[![Watch the video](v-photos/front.jpg)](https://youtube.com/)
+Test runs of the robot on the practice track:
+
+- ▶️ [Test run 1](video/test-run-1.mp4) (34 s)
+- ▶️ [Test run 2](video/test-run-2.mp4) (12 s)
+
+<!-- TODO (Shamil, optional): upload the videos to YouTube as well and add the links here; YouTube videos play right inside GitHub's page preview -->
 
 ---
 

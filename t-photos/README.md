@@ -1,3 +1,6 @@
 # Team photos
 
-<!-- TODO (Shamil): add two photos: one official team photo and one fun photo. -->
+| File | Description |
+|------|-------------|
+| `team-official.jpg` | Official team photo |
+| `team-fun.jpg` | Fun photo — working on the robot |

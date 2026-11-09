@@ -1,3 +1,10 @@
 # Vehicle photos
 
-<!-- TODO (Shamil): add 6 photos of the robot: front.jpg, back.jpg, left.jpg, right.jpg, top.jpg, bottom.jpg -->
+| File | View |
+|------|------|
+| `front.jpg` | Front — camera and front ultrasonic sensor |
+| `back.jpg` | Back — drive motor and gear train |
+| `left.jpg` | Left side |
+| `right.jpg` | Right side |
+| `top.jpg` | Top — Raspberry Pi, breadboard, wiring |
+| `bottom.jpg` | Bottom — 3D-printed base plate |
